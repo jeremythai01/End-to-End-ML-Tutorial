@@ -13,17 +13,13 @@ import matplotlib.pyplot as plt
 from textblob import TextBlob
 
 
+class CommentObject():
 
-class TweetObject():
-
-
-	def __init__(self, host, database, user):
+	def __init__(self, body, co, user):
 		self.password = os.environ['PASSWORD']
 		self.host = host
 		self.database = database
 		self.user = user
-		
-
 
 	def MySQLConnect(self,query):
 		"""
@@ -73,7 +69,7 @@ class TweetObject():
 		lower case, html, emoticons.
 		This will be done using Regex
 		? means option so colou?r matches
-		both color and colour.
+		both color and colour.souhaits
 		"""
 
 		# Do some text preprocessing
@@ -122,29 +118,6 @@ class TweetObject():
 			return 0
 		else:
 			return -1
-
-
-
-
-	def save_to_csv(self, df):
-		"""
-		Save cleaned data to a csv for further
-		analysis.
-		Parameters:
-		----------------
-		arg1: Pandas dataframe
-		"""
-		try:
-			df.to_csv("clean_tweets.csv")
-			print("\n")
-			print("csv successfully saved. \n")
-
-		
-		except Error as e:
-			print(e)
-		
-
-
 
 	def word_cloud(self, df):
 		plt.subplots(figsize = (12,10))
