@@ -13,9 +13,9 @@ import matplotlib.pyplot as plt
 from textblob import TextBlob
 
 
-class CommentObject():
+class CommentFactory():
 
-	def __init__(self, body, co, user):
+	def __init__(self, body, author, postObject, score, user):
 		self.password = os.environ['PASSWORD']
 		self.host = host
 		self.database = database
