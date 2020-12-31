@@ -15,6 +15,10 @@ def main():
         stream_handler = StreamHandler(db_connection, submissions)
 
         stream_handler.stream_to_database()
+
+        data = stream_handler.import_from_database()
+
+        
     
         #Query data and store into CommentFactory
 
