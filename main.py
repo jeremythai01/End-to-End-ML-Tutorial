@@ -16,7 +16,11 @@ def main():
 
         stream_handler.stream_to_database()
 
-        data = stream_handler.import_from_database()
+        stream_handler.import_from_database()
+
+        
+
+
 
         
     

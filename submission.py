@@ -14,6 +14,9 @@ class Submission():
     def add_comment(self, comment):
         self.__comment_set.add(comment)
 
+    def get_title(self):
+        return self.__title
+
 
 
 

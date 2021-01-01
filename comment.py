@@ -7,4 +7,7 @@ class Comment():
         self.__author = author
         self.__datetime = datetime
 
+    def get_body():
+        return body
+
     
