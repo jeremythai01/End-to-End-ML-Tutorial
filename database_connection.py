@@ -22,9 +22,10 @@ class DBConnectionSingleton:
             DBConnectionSingleton.__instance = self
             DBConnectionSingleton.__instance.__db_connection = self.__connect_database()
             DBConnectionSingleton.__instance.__db_cursor = self.__db_connection.cursor()
+            self.query("USE Reddit")
 
+    def close(self):
 
-    def __del__(self):
         self.__db_connection.close()
         print("MySQL connection is closed")         
 
@@ -48,15 +49,18 @@ class DBConnectionSingleton:
             print("Failed to insert record into Laptop table {}".format(error))
             quit()
         
+        
         return database
 
 
     def query(self, query, params=None):
         self.__db_cursor.execute(query, params)
-        self.__commit()
+        
 
-
-    def __commit(self):
+    def commit(self):
         self.__db_connection.commit()
 
+    def fetchall(self):
+        return self.__db_cursor.fetchall()
+        
    

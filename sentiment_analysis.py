@@ -1,9 +1,8 @@
-import nltk
 from nltk.tokenize import RegexpTokenizer
 from nltk.corpus import stopwords
 from nltk.stem import WordNetLemmatizer, PorterStemmer
+from nltk.sentiment.vader import SentimentIntensityAnalyzer 
 import re
-from vaderSentiment.vaderSentiment import SentimentIntensityAnalyzer 
 
 
 class SentimentAnalysis():
@@ -14,32 +13,28 @@ class SentimentAnalysis():
         self.__lemmatizer = WordNetLemmatizer()
         self.__tokenizer = RegexpTokenizer(r'\w+')
 
-    def analyze_sentiment(self, submission_set):
+    def sentiment(self, comment_set):
 
-        results = {'pos': 0, 'neg': 0, 'neu': 0}
+        results = {'positive': 0, 'negative': 0, 'neutral': 0}
 
-        for submission in submission_set:
-            clean_title = self.preprocess_text(submission.get_title())
-            self.predict(clean_title, results)
-            for comment in submission.get_comments():
-                clean_text = self.preprocess_text(comment.get_body())
-                self.predict(clean_text, results)
-                
+        for comment in comment_set:
+            clean_title = self.__preprocess_text(comment.get_body())
+            self.__predict(clean_title, results)
+
         return results
     
 
-    def predict(self, text, results):
+    def __predict(self, text, results):
 
         score = self.__model.polarity_scores(text)
         if score['compound'] > 0.05:
-            results['pos'] += 1
+            results['positive'] += 1
         elif score['compound'] < -0.05:
-            results['neg'] += 1
+            results['negative'] += 1
         else:
-            results['neu'] += 1
+            results['neutral'] += 1
 
-
-    def preprocess_text(self, text):
+    def __preprocess_text(self, text):
 
         text = str(text).lower().replace('{html}',"") 
     
@@ -54,4 +49,4 @@ class SentimentAnalysis():
         stem_words=[self.__stemmer.stem(w) for w in filtered_words]
         lemma_words=[self.__lemmatizer.lemmatize(w) for w in stem_words]
 
-        return " ".join(filtered_words)
+        return " ".join(lemma_words)

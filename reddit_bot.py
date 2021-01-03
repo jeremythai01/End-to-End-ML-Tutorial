@@ -36,5 +36,5 @@ class RedditBotSingleton:
         return reddit_bot
 
 
-    def get_bot(self):
-        return self.__bot
+    def scrape_reddit(self, subreddit, size):
+        return self.__bot.subreddit(subreddit).hot(limit=size)
