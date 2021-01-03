@@ -18,7 +18,7 @@ class Graph():
         plt.show()
 
 
-    def __animate(self, interval):
+    def __animate(self, i):
 
         style.use('fivethirtyeight')
 
@@ -33,8 +33,8 @@ class Graph():
         self.__fig.clear() 
         
 
-    def set_graph_data(self,results):
-       self. __graph_data = results
+    def set_graph_data(self,score):
+       self. __graph_data = score
 
 
 

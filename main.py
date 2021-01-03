@@ -18,10 +18,10 @@ def run_program(reddit_bot, db_connection, stream_handler, sentiment_analyzer, g
     stream_handler.import_from_database("SELECT subreddit, author, body, score, datetime FROM Comment")
 
     print("Sentiment analysis...")
-    results = sentiment_analyzer.sentiment(stream_handler.get_comment_set())
+    score = sentiment_analyzer.sentiment_score(stream_handler.get_comment_set())
 
     print("Displaying graph...")
-    graph.set_graph_data(results)
+    graph.set_graph_data(score)
     graph.display()
 
     print("Waiting for next iteration")
@@ -34,16 +34,16 @@ def main():
     sentiment_analyzer = SentimentAnalysis()
     graph = Graph()
     start_time = time.time()
-    TEN_MINUTES = 600.0
+    ONE_MINUTE = 60.0
 
-    while True:
-        try:
-            run_program(reddit_bot, db_connection, stream_handler, sentiment_analyzer, graph)
-            time.sleep(TEN_MINUTES - ((time.time() - start_time) % TEN_MINUTES))  
+    try:
+        while True:
+                run_program(reddit_bot, db_connection, stream_handler, sentiment_analyzer, graph)
+                time.sleep(ONE_MINUTE - ((time.time() - start_time) % ONE_MINUTE))  
 
-        except KeyboardInterrupt:
-            stream_handler.close_db_connection()
-            sys.exit(0)
+    except KeyboardInterrupt:
+        stream_handler.close_db_connection()
+        sys.exit(0)
 
 if __name__ == "__main__":
     main()
