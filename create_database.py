@@ -19,8 +19,7 @@ def main():
                                 subreddit VARCHAR(20),
                                 author VARCHAR(20), 
                                 body VARCHAR(250) UNIQUE, 
-                                score MEDIUMINT, 
-                                datetime VARCHAR(20),
+                                date VARCHAR(20),
                                 PRIMARY KEY (id_num))
                         """)
         db.commit() 

@@ -1,9 +1,9 @@
 from nltk.tokenize import RegexpTokenizer
 from nltk.corpus import stopwords
+import pandas as pd
 from nltk.stem import WordNetLemmatizer, PorterStemmer
 from nltk.sentiment.vader import SentimentIntensityAnalyzer 
 import re
-
 
 class SentimentAnalysis():
 
@@ -13,43 +13,50 @@ class SentimentAnalysis():
         self.__lemmatizer = WordNetLemmatizer()
         self.__tokenizer = RegexpTokenizer(r'\w+')
 
-    def sentiment_score(self, comment_set):
+    def sentiment_score(self, df):
 
-        score = 0
+        df_copy = df.copy()
 
-        for comment in comment_set:
-            score += self.__predict(comment)
+        clean_df = self.__preprocess_text(df_copy)
+        new_df = self.__predict(clean_df)
 
-        return score
-    
+        return new_df
+        
 
+    def __predict(self, clean_df):
 
-    def __predict(self, comment):
+        columns = ['date','sentiment']
+        new_df = pd.DataFrame(columns=columns)
 
-        clean_body = self.__preprocess_text(comment.get_body())
-        score = self.__model.polarity_scores(clean_body)
+        for i in range(len(clean_df['body'])):
 
-        if score['compound'] >= 0.05: #Positive
-            return comment.score
-        elif score['compound'] <= -0.05: #Negative
-            return -1 * comment.score
-        else:
-            return 0
-       
-    def __preprocess_text(self, text):
+            prediction_score = self.__model.polarity_scores(clean_df['body'][i])
 
-        text = str(text).lower().replace('{html}',"") 
-    
-        cleanr = re.compile('<.*?>')
-        clean_text = re.sub(cleanr, '', text)
+            new_row = {'date': float(clean_df['date'][i]), 'sentiment': prediction_score['compound'] }
+            new_df = new_df.append(new_row, ignore_index=True)
 
-        rem_url = re.sub(r'http\S+', '', clean_text)
-        rem_num = re.sub('[0-9]+', '', rem_url)
+        new_df.sort_values('date', inplace=True)
+        new_df['sentiment'] = new_df['sentiment'].rolling(int(len(new_df)/5)).mean()
+        return new_df
 
-        tokens = self.__tokenizer.tokenize(text)  
-        filtered_words = [w for w in tokens if not w in stopwords.words('english')]
-        stem_words=[self.__stemmer.stem(w) for w in filtered_words]
-        lemma_words=[self.__lemmatizer.lemmatize(w) for w in stem_words]
+               
+    def __preprocess_text(self, df):
 
-        return " ".join(lemma_words)
+        for i in range(len(df['body'])):
+
+            text = str(df['body'][i]).lower().replace('{html}',"") 
+            cleanr = re.compile('<.*?>')
+            clean_text = re.sub(cleanr, '', text)
+
+            rem_url = re.sub(r'http\S+', '', clean_text)
+            rem_num = re.sub('[0-9]+', '', rem_url)
+
+            tokens = self.__tokenizer.tokenize(rem_num)  
+            filtered_words = [w for w in tokens if not w in stopwords.words('english')]
+            stem_words=[self.__stemmer.stem(w) for w in filtered_words]
+            lemma_words=[self.__lemmatizer.lemmatize(w) for w in stem_words]
+
+            df['body'][i] =  " ".join(lemma_words)
+
+        return df
         
