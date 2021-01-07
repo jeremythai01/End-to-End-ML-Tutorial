@@ -3,25 +3,10 @@ import dash_core_components as dcc
 import dash_html_components as html
 from dash.dependencies import Input, Output
 import plotly
-import random
 import plotly.graph_objs as go
 import pandas as pd
-from collections import deque
-import sys
-import time
-from stream_handler import StreamHandler
-from reddit_bot import RedditBotSingleton
 from database_connection import DBConnectionSingleton
-from sentiment_analysis import SentimentAnalysis
 
-# X = deque(maxlen = 20) 
-# X.append(1) 
-  
-# Y = deque(maxlen = 20) 
-# Y.append(1) 
-
-#Global variable
-sentiment_df = None
 
 app = dash.Dash(__name__)
 app.layout = html.Div(
@@ -40,9 +25,16 @@ app.layout = html.Div(
 
 def update_graph_scatter(n_intervals):
     try:
-
-        X = sentiment_df.date.values[-100:]
-        Y = sentiment_df.sentiment.values[-100:]
+        db_connection = DBConnectionSingleton.getInstance()
+        db_connection.query("SELECT date, sentiment FROM Comment ORDER BY date DESC LIMIT 100")
+        data = db_connection.fetchall()
+        df = pd.DataFrame(data,columns = ['date', 'sentiment'])
+        df['date'] = df['date'].astype(float)
+        df.sort_values('date', inplace=True)
+        df['sentiment'] = df['sentiment'].rolling(int(len(df)/5)).mean()
+        df.dropna(inplace=True)
+        X = df.date.values[-100:]
+        Y = df.sentiment.values[-100:]
 
         data = plotly.graph_objs.Scatter(
                 x=list(X),
@@ -59,42 +51,9 @@ def update_graph_scatter(n_intervals):
             f.write(str(e))
             f.write('\n')
 
-
-def run_program():
-
-    reddit_bot = RedditBotSingleton.getInstance()
-    db_connection = DBConnectionSingleton.getInstance()
-    stream_handler = StreamHandler(db_connection)
-    sentiment_analyzer = SentimentAnalysis()
-    ONE_MINUTE = 60.0        
-
-    try:
-       while True:
-           
-            if is_app_running == True:
-                start_time = time.time()
-                time.sleep(ONE_MINUTE - ((time.time() - start_time) % ONE_MINUTE)) 
-
-            print("Scraping data from r/Stocks")
-            submissions = reddit_bot.scrape_reddit("stocks", 3)
-            
-            print("Streaming data to database...")
-            stream_handler.stream_to_database(submissions)
-
-            print("Loading data from database...")
-            df = stream_handler.import_from_database("SELECT body, date FROM Comment ORDER BY date DESC LIMIT 500")
-
-            print("Sentiment analysis...")
-        
-            global sentiment_df
-            sentiment_df = sentiment_analyzer.sentiment_score(df)  
-
-    except KeyboardInterrupt:
-        stream_handler.close_db_connection()
-        sys.exit(0)
+    
 
 if __name__ == '__main__':
     app.run_server(debug=True)
-    run_program()
-    
+
     

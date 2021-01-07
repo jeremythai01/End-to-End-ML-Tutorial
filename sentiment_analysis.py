@@ -18,31 +18,26 @@ class SentimentAnalysis():
         df_copy = df.copy()
 
         clean_df = self.__preprocess_text(df_copy)
-        new_df = self.__predict(clean_df)
 
-        return new_df
+        return self.__predict(clean_df)
         
 
     def __predict(self, clean_df):
 
-        columns = ['date','sentiment']
-        new_df = pd.DataFrame(columns=columns)
 
-        for i in range(len(clean_df['body'])):
+        clean_df['sentiment'] = None
+
+        for i in range(len(clean_df.axes[0])):
 
             prediction_score = self.__model.polarity_scores(clean_df['body'][i])
-
-            new_row = {'date': float(clean_df['date'][i]), 'sentiment': prediction_score['compound'] }
-            new_df = new_df.append(new_row, ignore_index=True)
-
-        new_df.sort_values('date', inplace=True)
-        new_df['sentiment'] = new_df['sentiment'].rolling(int(len(new_df)/5)).mean()
-        return new_df
+            clean_df['sentiment'][i] = prediction_score['compound']
+       
+        return clean_df
 
                
     def __preprocess_text(self, df):
 
-        for i in range(len(df['body'])):
+        for i in range(len(df.axes[0])):
 
             text = str(df['body'][i]).lower().replace('{html}',"") 
             cleanr = re.compile('<.*?>')

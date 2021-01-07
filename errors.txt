@@ -1,2 +1,6 @@
-
-'NoneType' object has no attribute 'date'
+name 'db_connection' is not defined
+name 'db_connection' is not defined
+name 'db_connection' is not defined
+name 'db_connection' is not defined
+name 'db_connection' is not defined
+name 'db_connection' is not defined

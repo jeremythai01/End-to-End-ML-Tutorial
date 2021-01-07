@@ -20,6 +20,7 @@ def main():
                                 author VARCHAR(20), 
                                 body VARCHAR(250) UNIQUE, 
                                 date VARCHAR(20),
+                                sentiment DECIMAL,
                                 PRIMARY KEY (id_num))
                         """)
         db.commit() 
