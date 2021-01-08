@@ -13,6 +13,10 @@ def main():
                                         database=database_config['database'], 
                                         auth_plugin=database_config['auth_plugin'])
         cursor = db.cursor()
+
+
+        cursor.execute("USE Reddit")
+        cursor.execute("DROP TABLE Comment")
         cursor.execute("""
                         CREATE TABLE Comment (
                                 id_num MEDIUMINT NOT NULL AUTO_INCREMENT, 
@@ -20,7 +24,7 @@ def main():
                                 author VARCHAR(20), 
                                 body VARCHAR(250) UNIQUE, 
                                 date VARCHAR(20),
-                                sentiment DECIMAL,
+                                sentiment DECIMAL(4),
                                 PRIMARY KEY (id_num))
                         """)
         db.commit() 

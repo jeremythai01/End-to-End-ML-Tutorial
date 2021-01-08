@@ -6,6 +6,8 @@ import plotly
 import plotly.graph_objs as go
 import pandas as pd
 from database_connection import DBConnectionSingleton
+from configparser import ConfigParser
+import mysql.connector
 
 
 app = dash.Dash(__name__)
@@ -25,16 +27,40 @@ app.layout = html.Div(
 
 def update_graph_scatter(n_intervals):
     try:
-        db_connection = DBConnectionSingleton.getInstance()
-        db_connection.query("SELECT date, sentiment FROM Comment ORDER BY date DESC LIMIT 100")
-        data = db_connection.fetchall()
+        # db_connection = DBConnectionSingleton.getInstance()
+        # db_connection.query("SELECT date, sentiment FROM Comment ORDER BY date DESC LIMIT 100")
+        # data = db_connection.fetchall()
+
+        config = ConfigParser()
+        config.read('config.ini')
+        database_config = config['database_config']
+
+        try:
+            # Connect to the database
+            database = mysql.connector.connect(host=database_config['host'], 
+                                        user=database_config['user'], 
+                                        password=database_config['password'],
+                                        port=database_config['port'], 
+                                        database=database_config['database'], 
+                                        auth_plugin=database_config['auth_plugin'])
+
+        except mysql.connector.Error as error:
+            print("Failed to insert record into Laptop table {}".format(error))
+            quit()
+
+        db_cursor = database.cursor()
+        db_cursor.execute("USE Reddit")
+        db_cursor.execute("SELECT date, sentiment FROM Comment ORDER BY date DESC LIMIT 1000")
+
+        data = db_cursor.fetchall()
+
         df = pd.DataFrame(data,columns = ['date', 'sentiment'])
         df['date'] = df['date'].astype(float)
         df.sort_values('date', inplace=True)
         df['sentiment'] = df['sentiment'].rolling(int(len(df)/5)).mean()
-        df.dropna(inplace=True)
-        X = df.date.values[-100:]
-        Y = df.sentiment.values[-100:]
+
+        X = df.date.values[-150:]
+        Y = df.sentiment.values[-150:]
 
         data = plotly.graph_objs.Scatter(
                 x=list(X),

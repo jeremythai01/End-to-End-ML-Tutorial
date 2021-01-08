@@ -7,7 +7,7 @@ from sentiment_analysis import SentimentAnalysis
 
 def run_program(reddit_bot, db_connection, stream_handler, sentiment_analyzer):
 
-    submissions = reddit_bot.scrape_reddit("Stocks", 3)
+    submissions = reddit_bot.scrape_reddit("Stocks", 10)
     df = reddit_bot.create_dataframe(submissions)
 
     df = sentiment_analyzer.sentiment_score(df)

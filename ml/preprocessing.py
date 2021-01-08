@@ -2,17 +2,14 @@ import pandas as pd
 from nltk.tokenize import RegexpTokenizer
 from nltk.corpus import stopwords
 from nltk.stem import WordNetLemmatizer, PorterStemmer
-from nltk.sentiment.vader import SentimentIntensityAnalyzer 
 from sklearn.decomposition import PCA
 from sklearn.preprocessing import MinMaxScaler
-from sklearn.model_selection import train_test_split
 from sklearn.feature_extraction.text import TfidfVectorizer
 import re
 
 class SentimentAnalysis():
 
     def __init__(self):
-        self.__model = SentimentIntensityAnalyzer() 
         self.__stemmer = PorterStemmer() 
         self.__lemmatizer = WordNetLemmatizer()
         self.__tokenizer = RegexpTokenizer(r'\w+')
@@ -45,7 +42,7 @@ class SentimentAnalysis():
         return df
 
                
-    def __preprocess_text(self, df):
+    def preprocess_text(self, df):
 
         clean_body_list = []
 
