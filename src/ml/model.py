@@ -37,6 +37,3 @@ class SentimentAnalysisSVM():
         df.drop(columns=['cleaned body'], inplace=True)
         
         return df
-
-        
-            

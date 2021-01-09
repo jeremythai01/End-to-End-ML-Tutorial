@@ -62,5 +62,3 @@ class DBConnectionSingleton:
 
     def fetchall(self):
         return self.__db_cursor.fetchall()
-        
-   

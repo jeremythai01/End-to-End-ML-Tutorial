@@ -26,17 +26,3 @@ class StreamHandler():
 
     def close_db_connection(self):
         self.__db_connection.close()
-
-
-
-
-    
-
-
-
-
-
-        
-
-
-

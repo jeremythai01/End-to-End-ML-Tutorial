@@ -49,5 +49,3 @@ class Preprocessing():
         vector = self.__vectorizer.transform(df['cleaned body']).toarray()
         vector = self.__pca.transform(vector)    # fits columns to 256 with minimal loss
         return vector
-                
-        
