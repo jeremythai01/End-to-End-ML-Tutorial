@@ -14,8 +14,8 @@ class Preprocessing():
         self.__stemmer = PorterStemmer() 
         self.__lemmatizer = WordNetLemmatizer()
         self.__tokenizer = RegexpTokenizer(r'\w+')
-        self.__vectorizer = pickle.load(open('./ml/nlp_tools/Tfidf_Vectorizer.pkl','rb'))
-        self.__pca = pickle.load(open('./ml/nlp_tools/pca.pkl','rb'))
+        self.__vectorizer = pickle.load(open('./src/ml/nlp_tools/Tfidf_Vectorizer.pkl','rb'))
+        self.__pca = pickle.load(open('./src/ml/nlp_tools/pca.pkl','rb'))
 
 
                

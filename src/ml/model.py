@@ -9,9 +9,9 @@ class SentimentAnalysisSVM():
     def __init__(self):
 
         model_name = "sentiment_svm_model.pkl"
-        model_path = f'./ml/models/{model_name}'
+        model_path = f'./src/ml/models/{model_name}'
 
-        if model_name not in os.listdir('./ml/models/'):
+        if model_name not in os.listdir('./src/ml/models/'):
             print(f'downloading the trained model {model_name}')
             wget.download(
                 "https://github.com/jeremythai01/End-to-End-ML/releases/download/model/sentiment_svm_model.pkl",
@@ -20,7 +20,7 @@ class SentimentAnalysisSVM():
         else:
             print('model already saved to api/ml/models')
 
-        self.__model = pickle.load(open('./ml/models/sentiment_svm_model.pkl','rb'))
+        self.__model = pickle.load(open('./src/ml/models/sentiment_svm_model.pkl','rb'))
         self.__preprocessing = Preprocessing()
 
 
