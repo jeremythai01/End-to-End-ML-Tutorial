@@ -41,7 +41,8 @@ class RedditBotSingleton:
 
 
     def scrape_reddit(self, subreddit, size):
-        return self.__bot.subreddit(subreddit).hot(limit=size)
+        submissions =  self.__bot.subreddit(subreddit).hot(limit=size)
+        return self.__create_dataframe(submissions)
 
     def __get_comment_info(self, comment):
         """This method will acquire the needed info for reddit comments"""
@@ -53,7 +54,7 @@ class RedditBotSingleton:
         }
 
 
-    def create_dataframe(self, submissions):
+    def __create_dataframe(self, submissions):
         columns = ['subreddit', 'author', 'body', 'date']
         df = pd.DataFrame(columns=columns)
         i_c = 0
