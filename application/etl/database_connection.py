@@ -35,7 +35,6 @@ class DBConnectionSingleton:
         config = ConfigParser()
         path = '/'.join((os.path.abspath(__file__).replace('\\', '/')).split('/')[:-1])
         config.read(os.path.join(path, 'database_config.ini'))
-        config.read('database_config.ini')
         database_config = config['database_config']
 
         try:

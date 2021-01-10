@@ -1,3 +1,4 @@
-config.ini
+bot_config.ini
+database_config.ini
 .vscode
 __pycache__
