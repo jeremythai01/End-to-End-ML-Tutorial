@@ -1,6 +1,6 @@
 from configparser import ConfigParser
 import mysql.connector
-
+import os
 class DBConnectionSingleton:
 
     __instance = None
@@ -33,17 +33,19 @@ class DBConnectionSingleton:
     def __connect_database(self):
           
         config = ConfigParser()
-        config.read('config.ini')
+        path = '/'.join((os.path.abspath(__file__).replace('\\', '/')).split('/')[:-1])
+        config.read(os.path.join(path, 'database_config.ini'))
+        config.read('database_config.ini')
         database_config = config['database_config']
 
         try:
             # Connect to the database
-            database = mysql.connector.connect(host=database_config['host'], 
-                                        user=database_config['user'], 
-                                        password=database_config['password'],
-                                        port=database_config['port'], 
-                                        database=database_config['database'], 
-                                        auth_plugin=database_config['auth_plugin'])
+            database = mysql.connector.connect(host=database_config['HOST'], 
+                                        user=database_config['MYSQL_USER'], 
+                                        password=database_config['MYSQL_PASSWORD'],
+                                        port=database_config['MYSQL_PORT'], 
+                                        database=database_config['MYSQL_DB'], 
+                                        auth_plugin=database_config['MYSQL_AUTH_PLUGIN'])
 
         except mysql.connector.Error as error:
             print("Failed to insert record into Laptop table {}".format(error))

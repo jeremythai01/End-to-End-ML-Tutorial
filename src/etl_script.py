@@ -13,7 +13,7 @@ def run_etl():
 
     try:
         while True:
-                submissions = reddit_bot.scrape_reddit("Stocks", 3)
+                submissions = reddit_bot.scrape_reddit("Stocks", 10)
                 df = reddit_bot.create_dataframe(submissions)
                 df = sentiment_analyzer.predict_sentiment(df)
                 stream_handler.stream_to_database(df)

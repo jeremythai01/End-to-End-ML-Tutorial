@@ -1,17 +1,26 @@
 import mysql.connector
-import configparser
-
+from configparser import ConfigParser
+import os
 def main():
 
-        config = configparser.ConfigParser()
-        config.read('config.ini')
+        config = ConfigParser()
+        path = '/'.join((os.path.abspath(__file__).replace('\\', '/')).split('/')[:-1])
+        config.read(os.path.join(path, 'database_config.ini'))
         database_config = config['database_config']
-        db = mysql.connector.connect(host=database_config['host'], 
-                                        user=database_config['user'], 
-                                        port=database_config['port'], 
-                                        password=database_config['password'],
-                                        database=database_config['database'], 
-                                        auth_plugin=database_config['auth_plugin'])
+
+        try:
+            # Connect to the database
+            db = mysql.connector.connect(host=database_config['HOST'], 
+                                        user=database_config['MYSQL_USER'], 
+                                        password=database_config['MYSQL_PASSWORD'],
+                                        port=database_config['MYSQL_PORT'], 
+                                        database=database_config['MYSQL_DB'], 
+                                        auth_plugin=database_config['MYSQL_AUTH_PLUGIN'])
+
+        except mysql.connector.Error as error:
+            print("Failed to insert record into Laptop table {}".format(error))
+            quit()
+
         cursor = db.cursor()
 
 

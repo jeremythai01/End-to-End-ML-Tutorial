@@ -7,7 +7,7 @@ import plotly.graph_objs as go
 import pandas as pd
 from configparser import ConfigParser
 import mysql.connector
-
+import os
 
 app = dash.Dash(__name__)
 app.layout = html.Div(
@@ -27,17 +27,18 @@ app.layout = html.Div(
 def update_graph_scatter(n_intervals):
     try:
         config = ConfigParser()
-        config.read('config.ini')
+        path = '/'.join((os.path.abspath(__file__).replace('\\', '/')).split('/')[:-1])
+        config.read(os.path.join(path, 'database_config.ini'))
         database_config = config['database_config']
 
         try:
             # Connect to the database
-            database = mysql.connector.connect(host=database_config['host'], 
-                                        user=database_config['user'], 
-                                        password=database_config['password'],
-                                        port=database_config['port'], 
-                                        database=database_config['database'], 
-                                        auth_plugin=database_config['auth_plugin'])
+            database = mysql.connector.connect(host=database_config['HOST'], 
+                                        user=database_config['MYSQL_USER'], 
+                                        password=database_config['MYSQL_PASSWORD'],
+                                        port=database_config['MYSQL_PORT'], 
+                                        database=database_config['MYSQL_DB'], 
+                                        auth_plugin=database_config['MYSQL_AUTH_PLUGIN'])
 
         except mysql.connector.Error as error:
             print("Failed to insert record into Laptop table {}".format(error))
@@ -45,7 +46,7 @@ def update_graph_scatter(n_intervals):
 
         db_cursor = database.cursor()
         db_cursor.execute("USE Reddit")
-        db_cursor.execute("SELECT date, sentiment FROM Comment ORDER BY date DESC LIMIT 1000")
+        db_cursor.execute("SELECT date, sentiment FROM Comment ORDER BY date DESC LIMIT 500")
 
         data = db_cursor.fetchall()
         database.close()
@@ -56,8 +57,8 @@ def update_graph_scatter(n_intervals):
 
         df['sentiment'] = df['sentiment'].rolling(int(len(df)/5)).mean()
 
-        X = df.date.values[-200:]
-        Y = df.sentiment.values[-200:]
+        X = df.date.values[-100:]
+        Y = df.sentiment.values[-100:]
 
         data = plotly.graph_objs.Scatter(
                 x=list(X),

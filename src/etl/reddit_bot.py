@@ -1,6 +1,7 @@
 from praw import Reddit
 from configparser import ConfigParser
 import pandas as pd
+import os
 
 class RedditBotSingleton:
 
@@ -27,13 +28,14 @@ class RedditBotSingleton:
         #Create reddit instance
         
         config = ConfigParser()
-        config.read('config.ini')
+        path = '/'.join((os.path.abspath(__file__).replace('\\', '/')).split('/')[:-1])
+        config.read(os.path.join(path, 'bot_config.ini'))
         bot_config = config['bot_config']
-        reddit_bot = Reddit(username=bot_config['username'],
-                            password=bot_config['password'],
-                            client_id=bot_config['client_id'],
-                            client_secret=bot_config['client_secret'],
-                            user_agent=bot_config['user_agent'])
+        reddit_bot = Reddit(username=bot_config['USERNAME'],
+                            password=bot_config['PASSWORD'],
+                            client_id=bot_config['CLIENT_ID'],
+                            client_secret=bot_config['CLIENT_SECRET'],
+                            user_agent=bot_config['USER_AGENT'])
 
         return reddit_bot
 
