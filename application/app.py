@@ -3,7 +3,6 @@ from etl.reddit_bot import RedditBotSingleton
 from etl.stream_handler import StreamHandler
 from etl.database_connection import DBConnectionSingleton
 from ml.model import SentimentAnalysisSVM
-import os 
 
 app = Flask(__name__)
 
