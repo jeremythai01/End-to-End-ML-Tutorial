@@ -9,7 +9,6 @@ class StreamHandler():
         for i in range(len(df.axes[0])):
             
             try:
-
                 to_add = [df['subreddit'][i], df['author'][i], df['body'][i], df['date'][i], float(df['sentiment'][i])]
                 insert_query = """
                                 INSERT IGNORE INTO Comment 
@@ -23,6 +22,24 @@ class StreamHandler():
                 continue
 
         print(f'Streamed {i_c} comments')
+
+
+    def load_data(self, size):
+        insert_query = "SELECT date, sentiment FROM Comment ORDER BY date DESC LIMIT " + str(size)
+
+        self.__db_connection.query(insert_query)
+
+        data = self.__db_connection.fetchall()
+
+        return data
+
+    def serialize(self, row):
+        return {
+            'date': row[0],
+            'sentiment' : row[1]
+        }
+
+
 
     def close_db_connection(self):
         self.__db_connection.close()

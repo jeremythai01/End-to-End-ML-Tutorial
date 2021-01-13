@@ -75,7 +75,6 @@ def update_graph_scatter(n_intervals):
             f.write(str(e))
             f.write('nig\n')
 
-    
 
 if __name__ == '__main__':
     app.run_server(debug=True)  
