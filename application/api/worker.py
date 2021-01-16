@@ -1,1 +1,0 @@
-from Celery import celery

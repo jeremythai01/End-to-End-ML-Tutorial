@@ -1,6 +1,7 @@
 bot_config.ini
 database_config.ini
 config.ini
+.env
 .vscode
 __pycache__
 errors.txt
