@@ -1,0 +1,23 @@
+[[source]]
+url = "https://pypi.org/simple"
+verify_ssl = true
+name = "pypi"
+
+[packages]
+nltk = "*"
+numpy = "*"
+pandas = "*"
+praw = "*"
+scikit-learn = "==0.22"
+wget = "*"
+pickleshare = "*"
+mysql-connector = "*"
+gunicorn = "*"
+python-decouple = "*"
+Flask = "*"
+
+[dev-packages]
+pytest = "*"
+
+[requires]
+python_version = "3.8"

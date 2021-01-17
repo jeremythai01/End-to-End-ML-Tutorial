@@ -26,25 +26,12 @@ app.layout = html.Div(
 
 def update_graph_scatter(n_intervals):
 
-    # response_stream = requests.post(f"{config['API_URL']}/stream")
+    # response_stream = requests.post(f"{config('REST_API_URL')}/stream")
     # time.sleep(30)
-    
 
-    response_comments = requests.get(f"{config['API_URL']}/comments")
-
-    # with open('errors.txt','a') as f:
-    #     if response_stream.ok:
-    #         f.write("Streamed successfully\n")
-    #         response_comments = requests.get(f"{config['API_URL']}/comments")
-    #         if response_comments.ok:
-    #             f.write("Loaded successfully\n")
-    #         else:
-    #             f.write("error load\n")
-    #     else:
-    #         f.write("error stream\n")
+    response_comments = requests.get(f"{config('REST_API_URL')}/comments")
 
     comments = pd.DataFrame(response_comments.json())
-    comments['date'] = comments['date'].astype(float)
     comments.sort_values('date', inplace=True)
     comments['sentiment'] = comments['sentiment'].rolling(int(len(comments)/5)).mean()
 

@@ -1,16 +1,15 @@
 from flask import Flask, jsonify, request
 from etl.reddit_bot import RedditBotSingleton
 from etl.stream_handler import StreamHandler
-from etl.database_connection import DBConnectionSingleton
-from ml.model import SentimentAnalysisSVM
+from etl.db.database_connection import DBConnectionSingleton
+from ml.model import SentimentAnalysisModel
 from decouple import config
 import warnings
 
 reddit_bot = RedditBotSingleton.getInstance()
 db_connection = DBConnectionSingleton.getInstance()
 stream_handler = StreamHandler(db_connection)
-warnings.filterwarnings(action="ignore", message="Trying to unpickle estimator ")
-sentiment_analyzer = SentimentAnalysisSVM()
+sentiment_analyzer = SentimentAnalysisModel()
 LIMIT_NUMBER_SUBREDDITS = 5
 LIMIT_NUMBER_COMMENTS = 500
 

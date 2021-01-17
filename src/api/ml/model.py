@@ -3,7 +3,9 @@ import pickle
 import wget
 from ml.preprocessing import Preprocessing
 from functools import reduce
-class SentimentAnalysisSVM():
+import warnings
+
+class SentimentAnalysisModel():
 
     def __init__(self):
 
@@ -18,7 +20,8 @@ class SentimentAnalysisSVM():
             )
         else:
             print('model already saved to /ml/models')
-
+            
+        warnings.filterwarnings(action="ignore", message="Trying to unpickle estimator ")
         self.__model = pickle.load(open('./ml/models/sentiment_svm_model.pkl','rb'))
         self.__preprocessing = Preprocessing()
 

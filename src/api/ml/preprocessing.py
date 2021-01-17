@@ -7,14 +7,18 @@ from sklearn.preprocessing import MinMaxScaler
 from sklearn.feature_extraction.text import TfidfVectorizer
 import re
 import pickle
+import warnings
+
 class Preprocessing():
 
     def __init__(self):
         self.__stemmer = PorterStemmer() 
         self.__lemmatizer = WordNetLemmatizer()
         self.__tokenizer = RegexpTokenizer(r'\w+')
+        warnings.filterwarnings(action="ignore", message="Trying to unpickle estimator ")
         self.__vectorizer = pickle.load(open('./ml/nlp_tools/Tfidf_Vectorizer.pkl','rb'))
         self.__pca = pickle.load(open('./ml/nlp_tools/pca.pkl','rb'))
+        self.__stopwords = stopwords.words('english')
 
 
                
@@ -32,7 +36,7 @@ class Preprocessing():
             rem_num = re.sub('[0-9]+', '', rem_url)
 
             tokens = self.__tokenizer.tokenize(rem_num)  
-            filtered_words = [w for w in tokens if not w in stopwords.words('english')]
+            filtered_words = [w for w in tokens if not w in self.__stopwords]
             stem_words=[self.__stemmer.stem(w) for w in filtered_words]
             lemma_words=[self.__lemmatizer.lemmatize(w) for w in stem_words]
 

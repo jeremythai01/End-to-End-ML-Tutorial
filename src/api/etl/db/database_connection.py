@@ -36,8 +36,8 @@ class DBConnectionSingleton:
             # Connect to the database
             database = mysql.connector.connect(host=config('MYSQL_HOST'), 
                                             user=config('MYSQL_USER'), 
-                                            password=config('MYSQL_PASSWORD'),
-                                            port=config('MYSQL_PORT'), 
+                                            password=config('MYSQL_ROOT_PASSWORD'),
+                                            port=int(str(config('MYSQL_PORT'))), 
                                             database=config('MYSQL_DB'))
 
         except mysql.connector.Error as error:

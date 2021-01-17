@@ -1,6 +1,7 @@
 from praw import Reddit
 from decouple import config
 import pandas as pd
+from datetime import datetime, timezone
 
 class RedditBotSingleton:
 
@@ -46,9 +47,13 @@ class RedditBotSingleton:
             'subreddit': str(comment.subreddit),
             'author': str(comment.author),
             'body': str(comment.body), 
-            'date': str(comment.created)
+            'date': self.__convert_time_zones(comment.created)
         }
 
+    def __convert_time_zones(self, date):
+        utc_dt = datetime.utcfromtimestamp(date)
+        local_dt = utc_dt.replace(tzinfo=timezone.utc).astimezone(tz=None)
+        return local_dt.strftime('%Y-%m-%d %H:%M:%S')
 
     def __create_dataframe(self, submissions):
         columns = ['subreddit', 'author', 'body', 'date']
