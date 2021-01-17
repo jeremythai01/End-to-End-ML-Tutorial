@@ -21,14 +21,13 @@ class Preprocessing():
         self.__stopwords = stopwords.words('english')
 
 
-               
     def preprocess_text(self, df):
 
         clean_body_list = []
 
         for i in range(len(df.axes[0])):
 
-            text = str(df['body'][i]).lower().replace('{html}',"") 
+            text = str(df['text'][i]).lower().replace('{html}',"") 
             cleanr = re.compile('<.*?>')
             clean_text = re.sub(cleanr, '', text)
 
@@ -43,12 +42,12 @@ class Preprocessing():
             clean_body = " ".join(lemma_words)
             clean_body_list.append(clean_body)            
         
-        df['cleaned body'] = clean_body_list
+        df['cleaned text'] = clean_body_list
 
         return df
 
     def vectorize(self, df):
 
-        vector = self.__vectorizer.transform(df['cleaned body']).toarray()
+        vector = self.__vectorizer.transform(df['cleaned text']).toarray()
         vector = self.__pca.transform(vector)    # fits columns to 256 with minimal loss
         return vector

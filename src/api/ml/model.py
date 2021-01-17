@@ -34,8 +34,7 @@ class SentimentAnalysisModel():
         prediction_score = [reduce(lambda x, y: round(y - x, 4), row) for row in prediction_proba]
     
         df['sentiment'] = prediction_score
-        
 
-        df.drop(columns=['cleaned body'], inplace=True)
+        df.drop(columns=['cleaned text'], inplace=True)
         
         return df

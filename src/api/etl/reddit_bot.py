@@ -46,7 +46,7 @@ class RedditBotSingleton:
         return {
             'subreddit': str(comment.subreddit),
             'author': str(comment.author),
-            'body': str(comment.body), 
+            'text': str(comment.body), 
             'date': self.__convert_time_zones(comment.created)
         }
 
@@ -56,7 +56,7 @@ class RedditBotSingleton:
         return local_dt.strftime('%Y-%m-%d %H:%M:%S')
 
     def __create_dataframe(self, submissions):
-        columns = ['subreddit', 'author', 'body', 'date']
+        columns = ['subreddit', 'author', 'text', 'date']
         df = pd.DataFrame(columns=columns)
         i_c = 0
         for submission in submissions:

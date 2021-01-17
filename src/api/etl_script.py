@@ -1,14 +1,12 @@
 import sys
 from etl.stream_handler import StreamHandler
 from etl.reddit_bot import RedditBotSingleton
-from etl.database_connection import DBConnectionSingleton
 from ml.model import SentimentAnalysisModel
 
 def run_etl():
 
     reddit_bot = RedditBotSingleton.getInstance()
-    db_connection = DBConnectionSingleton.getInstance()
-    stream_handler = StreamHandler(db_connection)
+    stream_handler = StreamHandler()
     sentiment_analyzer = SentimentAnalysisModel()
 
     try:

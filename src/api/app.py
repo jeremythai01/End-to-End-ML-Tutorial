@@ -1,14 +1,11 @@
-from flask import Flask, jsonify, request
+from flask import Flask, jsonify
 from etl.reddit_bot import RedditBotSingleton
 from etl.stream_handler import StreamHandler
-from etl.db.database_connection import DBConnectionSingleton
 from ml.model import SentimentAnalysisModel
 from decouple import config
-import warnings
 
 reddit_bot = RedditBotSingleton.getInstance()
-db_connection = DBConnectionSingleton.getInstance()
-stream_handler = StreamHandler(db_connection)
+stream_handler = StreamHandler()
 sentiment_analyzer = SentimentAnalysisModel()
 LIMIT_NUMBER_SUBREDDITS = 5
 LIMIT_NUMBER_COMMENTS = 500
@@ -22,7 +19,7 @@ def stream():
     df = sentiment_analyzer.predict_sentiment(df)
     stream_handler.stream_to_database(df)
 
-    return "resolved"
+    return jsonify("OK")
 
 @app.route('/comments', methods=['GET'])
 def get_comments():

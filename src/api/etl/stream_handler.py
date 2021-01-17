@@ -1,7 +1,9 @@
+from etl.database_connection import DBConnectionSingleton
+
 class StreamHandler():
 
-    def __init__(self, db_connection):
-        self.__db_connection = db_connection
+    def __init__(self):
+        self.__db_connection = db_connection = DBConnectionSingleton.getInstance()
 
     def stream_to_database(self, df):
 
