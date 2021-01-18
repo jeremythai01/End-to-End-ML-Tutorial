@@ -1,12 +1,23 @@
+#! /usr/bin/env python
+# -*- coding: utf-8 -*-
+
+"""The Dash app which will display a real-time graph of sentiment scores from 
+
+the Reddit comments. It updates live sentiment scores by making HTTP requests
+
+to the Flask API.
+"""
+
+
 import dash
-import dash_core_components as dcc
-import dash_html_components as html
-from dash.dependencies import Input, Output
-import plotly
-import plotly.graph_objs as go
 import pandas as pd
+import plotly
 import requests
 import time
+import dash_core_components as dcc
+import dash_html_components as html
+import plotly.graph_objs as go
+from dash.dependencies import Input, Output
 from decouple import config
 
 

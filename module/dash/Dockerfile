@@ -10,4 +10,4 @@ RUN pipenv install --system --deploy --ignore-pipfile
 EXPOSE 8050
 
 ENTRYPOINT [ "python3" ]
-CMD ["app.py"]
+CMD ["dash_app.py"]

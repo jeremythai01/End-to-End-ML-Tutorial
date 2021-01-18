@@ -1,8 +1,20 @@
-from flask import Flask, jsonify
+#! /usr/bin/env python
+# -*- coding: utf-8 -*-
+
+"""The Flask Rest API which will receive HTTP requests from the Dash app,
+
+interact with the MySQL database and serve the machine learning model for 
+
+real-time inference.
+"""
+
+
+from decouple import config
+from flask import Flask
+from flask import jsonify
 from etl.reddit_bot import RedditBotSingleton
 from etl.stream_handler import StreamHandler
 from ml.model import SentimentAnalysisModel
-from decouple import config
 
 reddit_bot = RedditBotSingleton.getInstance()
 stream_handler = StreamHandler()
@@ -25,6 +37,7 @@ def stream():
 def get_comments():
   
     query = stream_handler.retrieve_data(LIMIT_NUMBER_COMMENTS)
+    
     return jsonify([stream_handler.serialize(row) for row in query])
 
 
