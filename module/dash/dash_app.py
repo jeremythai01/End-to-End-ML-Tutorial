@@ -38,7 +38,6 @@ app.layout = html.Div(
 
 def update_graph_scatter(n_intervals):
 
-
     response_stream = requests.post(f"{config('REST_API_URL')}stream")
     time.sleep(30)
 
@@ -60,7 +59,6 @@ def update_graph_scatter(n_intervals):
 
     return {'data': [data],'layout' : go.Layout(xaxis=dict(range=[min(X),max(X)]),
                                                 yaxis=dict(range=[min(Y),max(Y)]),)}
-
 
 
 if __name__ == '__main__':
