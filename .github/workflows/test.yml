@@ -17,8 +17,9 @@ jobs:
     - name: Install dependencies
       run:  |
         python -m pip install --upgrade pip
-        pip install pipenv && pipenv install --deploy --ignore-pipfile
+        pip install pipenv
+        cd module/api && pipenv shell
+        pipenv install --ignore-pipfile
     - name: Run tests with pytest
       run: |
-        cd module/api
         python -m pytest
