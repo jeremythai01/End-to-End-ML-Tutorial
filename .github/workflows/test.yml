@@ -20,6 +20,4 @@ jobs:
         pip install pipenv
         cd module/api
         pipenv install --ignore-pipfile
-    - name: Run tests with pytest
-      run: |
-        python -m pytest
+        pipenv run python -m pytest
