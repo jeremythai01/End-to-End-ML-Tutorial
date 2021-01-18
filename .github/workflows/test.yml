@@ -14,19 +14,8 @@ jobs:
       uses: actions/setup-python@v1
       with:
         python-version: 3.8.7
-    - name: Setup environment variables
-      env:
-      	MYSQL_DB: $MYSQL_DB
-      	MYSQL_HOST: ${MYSQL_HOST}
-      	MYSQL_PORT: ${MYSQL_PORT}
-      	MYSQL_DB: ${MYSQL_DB}
-      	MYSQL_USER: ${MYSQL_USER}
-      	MYSQL_ROOT_PASSWORD: ${MYSQL_ROOT_PASSWORD}
-      	REDDIT_CLIENT_ID: ${REDDIT_CLIENT_ID}
-      	REDDIT_CLIENT_SECRET: ${REDDIT_CLIENT_SECRET}
-      	REDDIT_PASSWORD: ${REDDIT_PASSWORD}
-      	REDDIT_USERNAME: ${REDDIT_USERNAME}
-      	REDDIT_USER_AGENT: ${REDDIT_USER_AGENT}
+    - name: Set ENV variables
+      run: for v in `cat env` ; do echo "::set-env name=${v%%=*}::${v##*=}" ; done
     - name: Install dependencies
       run:  |
         python -m pip install --upgrade pip
@@ -34,5 +23,4 @@ jobs:
         cd module/api
         pipenv install --ignore-pipfile
     - name: Run tests with pytest
-      run: |
-        pipenv run python -m pytest
+      run: pipenv run python -m pytest
