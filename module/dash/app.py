@@ -9,6 +9,7 @@ import requests
 import time
 from decouple import config
 
+
 app = dash.Dash(__name__)
 app.layout = html.Div(
     [   html.H2('Live Reddit Stock Sentiment'),
@@ -26,10 +27,11 @@ app.layout = html.Div(
 
 def update_graph_scatter(n_intervals):
 
-    # response_stream = requests.post(f"{config('REST_API_URL')}/stream")
-    # time.sleep(30)
 
-    response_comments = requests.get(f"{config('REST_API_URL')}/comments")
+    response_stream = requests.post(f"{config('REST_API_URL')}stream")
+    time.sleep(30)
+
+    response_comments = requests.get(f"{config('REST_API_URL')}comments")
 
     comments = pd.DataFrame(response_comments.json())
     comments.sort_values('date', inplace=True)

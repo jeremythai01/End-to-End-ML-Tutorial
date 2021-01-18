@@ -24,9 +24,10 @@ def stream():
 @app.route('/comments', methods=['GET'])
 def get_comments():
   
-    query = stream_handler.load_data(LIMIT_NUMBER_COMMENTS)
+    query = stream_handler.retrieve_data(LIMIT_NUMBER_COMMENTS)
     return jsonify([stream_handler.serialize(row) for row in query])
 
 
 if __name__ == '__main__':
-    app.run(host=config('MYSQL_HOST'))
+    
+    app.run(host=config('REST_API_HOST'))

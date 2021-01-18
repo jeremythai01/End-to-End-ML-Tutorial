@@ -1,11 +1,16 @@
 import os
 import pickle
-import wget
-from ml.preprocessing import Preprocessing
-from functools import reduce
 import warnings
+import wget
+from functools import reduce
+from ml.preprocessing import Preprocessing
+
 
 class SentimentAnalysisModel():
+    """Sentiment analysis machine learning model to predict the sentiment of
+
+    Reddit comments.
+    """
 
     def __init__(self):
 

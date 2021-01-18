@@ -1,6 +1,8 @@
-import preprocessing
 import pandas as pd
+import re
 import regex
+from ml import preprocessing
+
 
 def test_preprocess_text_check_numbers():    
 
@@ -15,6 +17,7 @@ def test_preprocess_text_check_numbers():
     cleaned_text = result_df['cleaned text'][0]
 
     assert any(char.isdigit() for char in cleaned_text) == False
+    
 
 def test_preprocess_text_check_special_characters():    
 
@@ -28,6 +31,6 @@ def test_preprocess_text_check_special_characters():
 
     cleaned_text = result_df['cleaned text'][0]
 
-    regex = re.compile('[@_!#$%^&*()<>?/\|}{~:]') 
+    regex = re.compile('[@_!#$%^&*()<>?/}{~:]') 
 
     assert regex.search(cleaned_text) == None

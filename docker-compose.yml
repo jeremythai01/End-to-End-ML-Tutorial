@@ -3,9 +3,9 @@ services:
   db:
     image: mysql
     environment:
-      - MYSQL_DB="${MYSQL_DB}"
-      - MYSQL_USER="${MYSQL_USER}"
-      - MYSQL_ROOT_PASSWORD="${MYSQL_ROOT_PASSWORD}"
+      - MYSQL_DB=${MYSQL_DB}
+      - MYSQL_USER=${MYSQL_USER}
+      - MYSQL_ROOT_PASSWORD=${MYSQL_ROOT_PASSWORD}
     ports:
       - "5000:5000"
     volumes:
@@ -16,16 +16,17 @@ services:
       context: src/api
       dockerfile: Dockerfile
     environment:
-      - MYSQL_HOST="${MYSQL_HOST}"
-      - MYSQL_PORT="${MYSQL_PORT}"
-      - MYSQL_DB="${MYSQL_DB}"
-      - MYSQL_USER="${MYSQL_USER}"
-      - MYSQL_ROOT_PASSWORD="${MYSQL_ROOT_PASSWORD}"
-      - REDDIT_CLIENT_ID="${REDDIT_CLIENT_ID}"
-      - REDDIT_CLIENT_SECRET="${REDDIT_CLIENT_SECRET}"
-      - REDDIT_PASSWORD="${REDDIT_PASSWORD}"
-      - REDDIT_USERNAME="${REDDIT_USERNAME}"
-      - REDDIT_USER_AGENT="${REDDIT_USER_AGENT}"
+      - REST_API_HOST=${REST_API_HOST}
+      - MYSQL_HOST=${MYSQL_HOST}
+      - MYSQL_PORT=${MYSQL_PORT}
+      - MYSQL_DB=${MYSQL_DB}
+      - MYSQL_USER=${MYSQL_USER}
+      - MYSQL_ROOT_PASSWORD=${MYSQL_ROOT_PASSWORD}
+      - REDDIT_CLIENT_ID=${REDDIT_CLIENT_ID}
+      - REDDIT_CLIENT_SECRET=${REDDIT_CLIENT_SECRET}
+      - REDDIT_PASSWORD=${REDDIT_PASSWORD}
+      - REDDIT_USERNAME=${REDDIT_USERNAME}
+      - REDDIT_USER_AGENT=${REDDIT_USER_AGENT}
     depends_on:
       - db
     restart: always
@@ -36,7 +37,8 @@ services:
     ports:
       - "8050:8050"
     environment:
-      - REST_API_URL="${REST_API_URL}"
+      - REST_API_URL=${REST_API_URL}
+      - DASH_HOST=${DASH_HOST}
     depends_on:
       - api
     restart: always

@@ -7,6 +7,8 @@ COPY . /app
 RUN pip install pipenv
 RUN pipenv install --system --deploy --ignore-pipfile
 
-EXPOSE 8050
+EXPOSE 5000
 
-CMD ["gunicorn", "-b", "0.0.0.0:8050", "app:app.server"]
+
+ENTRYPOINT [ "python3" ]
+CMD ["app.py"]

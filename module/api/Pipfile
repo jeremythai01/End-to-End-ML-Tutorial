@@ -11,10 +11,10 @@ praw = "*"
 scikit-learn = "==0.22"
 wget = "*"
 pickleshare = "*"
-mysql-connector = "*"
 gunicorn = "*"
 python-decouple = "*"
 Flask = "*"
+mysql-connector-python = "*"
 
 [dev-packages]
 pytest = "*"
