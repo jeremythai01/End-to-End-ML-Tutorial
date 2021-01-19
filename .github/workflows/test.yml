@@ -24,4 +24,3 @@ jobs:
       run: |
         cd module/api
         pipenv run python -m pytest
-      	
