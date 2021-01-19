@@ -23,4 +23,4 @@ jobs:
     - name: Run tests with pytest
       run: |
         cd module/api
-        pipenv run python -m pytest
+        PIPENV_DOTENV_LOCATION=/module/api pipenv run python -m pytest
