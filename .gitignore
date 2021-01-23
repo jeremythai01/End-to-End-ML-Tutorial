@@ -1,5 +1,6 @@
 .env
 .vscode
 .pytest_cache
+.ipynb_checkpoints
 __pycache__
 errors.txt
