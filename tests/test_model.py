@@ -2,12 +2,12 @@
 # -*- coding: utf-8 -*-
 
 import pandas as pd
-from ml import model
+from services.ml import sentiment_analyzer
 
 
 def test_predict_sentiment():   
 
-    ml_model = model.SentimentAnalysisModel()
+    ml_model = sentiment_analyzer.SentimentAnalyzer()
 
     df = pd.DataFrame()
 

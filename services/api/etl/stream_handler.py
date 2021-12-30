@@ -1,7 +1,9 @@
 #! /usr/bin/env python
 # -*- coding: utf-8 -*-
 
-from etl.database_connection import DBConnectionSingleton
+from typing import Tuple
+from pandas.core.frame import DataFrame
+from etl.database_connection import DBConnection
 
 
 class StreamHandler():
@@ -10,10 +12,10 @@ class StreamHandler():
     database.
     """
     def __init__(self):
-        self.__db_connection = DBConnectionSingleton.getInstance()
+        self.__db_connection = DBConnection.getInstance()
 
 
-    def stream_to_database(self, df):
+    def stream_to_database(self, df: DataFrame):
         """Stream transformed data to database.
 
         Parameters
@@ -47,7 +49,7 @@ class StreamHandler():
         print(f'Streamed {i_c} comments')
 
 
-    def retrieve_data(self, size):
+    def retrieve_data(self, size: int):
         """Retrieve specified data from database.
 
         Parameters
@@ -68,7 +70,7 @@ class StreamHandler():
         return sentiment_data
 
 
-    def serialize(self, row):
+    def serialize(self, row: Tuple):
         """Seralize specified row fetched from database.
 
         Parameters

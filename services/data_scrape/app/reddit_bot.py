@@ -1,36 +1,41 @@
 #! /usr/bin/env python
 # -*- coding: utf-8 -*-
 
-import pandas as pd
+import json
+#import boto3
 from decouple import config
-from datetime import datetime
-from datetime import timezone
 from praw import Reddit
+from praw.reddit import Comment, Submission
+from typing import List
+from app.schemas import Comment
+from app.utils import convert_time_zone, get_dt_now
 
+#s3_client = boto3.client("s3")
+S3_BUCKET = "your-s3-bucket"
 
-class RedditBotSingleton:
+class RedditBot:
     """Reddit bot singleton to scrape Reddit data from subreddits."""
-    __instance = None
+    _instance = None
 
     @staticmethod 
     def getInstance():
         """Static access method."""
-        if RedditBotSingleton.__instance == None:
-            RedditBotSingleton()
+        if RedditBot._instance == None:
+            RedditBot()
 
-        return RedditBotSingleton.__instance
+        return RedditBot._instance
 
 
     def __init__(self):
         """Virtually private constructor."""
-        if RedditBotSingleton.__instance != None:
+        if RedditBot._instance != None:
             raise Exception("This class is a singleton!")
         else:
-            RedditBotSingleton.__instance = self
-            RedditBotSingleton.__instance.__bot = self.__create_reddit_bot()
+            RedditBot._instance = self
+            RedditBot._instance._bot = self._create_reddit_bot()
 
 
-    def __create_reddit_bot(self):
+    def _create_reddit_bot(self):
         """Create Reddit bot instance.
 
         Returns
@@ -46,7 +51,7 @@ class RedditBotSingleton:
         return reddit_bot
 
 
-    def scrape_reddit(self, subreddit, n_submissions):
+    def scrape_reddit(self, subreddit: str, n_submissions: int):
         """Extract submissions and scrape data from specified subreddit.
 
         Parameters
@@ -61,13 +66,13 @@ class RedditBotSingleton:
         -------
         df : dataframe of scraped Reddit comments
         """
-        submissions =  self.__bot.subreddit(subreddit).hot(limit=n_submissions)
-        df = self.__scrape_comments(submissions)
+        submissions =  self._instance._bot.subreddit(subreddit).hot(limit=n_submissions)
+        df = self._scrape_comments(submissions)
 
         return df
 
 
-    def __extract_comment_info(self, comment):
+    def _extract_comment_info(self, comment: Comment):
         """Extract the needed info for reddit comments.
         
         Parameters
@@ -83,32 +88,13 @@ class RedditBotSingleton:
             'subreddit': str(comment.subreddit),
             'author': str(comment.author),
             'text': str(comment.body), 
-            'date': self.__convert_time_zone(comment.created)  # Convert timezone
+            'date': convert_time_zone(comment.created)
         }
 
         return comment_info
 
 
-    def __convert_time_zone(self, date):
-        """Convert time zone to local time.
-        
-        Parameters
-        ----------
-        date : UNIX format 
-               The date to be changed to local time.     
-        
-        Returns
-        -------
-        local_datetime : datetime adjusted according to local time zone
-        """
-        utc_datetime = datetime.utcfromtimestamp(date)
-        local_datetime = utc_datetime.replace(tzinfo=timezone.utc).astimezone(tz=None)
-        local_datetime = local_datetime.strftime('%Y-%m-%d %H:%M:%S')
-        
-        return local_datetime
-
-
-    def __scrape_comments(self, submissions):
+    def _scrape_comments(self, submissions: List[Submission]):
         """Scrape Reddit comments from specified submissions.
         
         Parameters
@@ -120,10 +106,9 @@ class RedditBotSingleton:
         -------
         df : dataframe of scraped Reddit comments
         """
-        columns = ['subreddit', 'author', 'text', 'date']
-        df = pd.DataFrame(columns=columns)
+        comments = []
         i_c = 0
-        MIN_VOTES = 2
+        MIN_VOTES = 5
         for submission in submissions:
             try:
                 
@@ -140,9 +125,8 @@ class RedditBotSingleton:
                     if comment.author == "None" or comment.score < MIN_VOTES:
                         continue
 
-                    c_info = self.__extract_comment_info(comment)
-                    df = df.append(c_info, ignore_index=True)
-                 
+                    c_info = self._extract_comment_info(comment)
+                    comments.append(c_info)
                     i_c += 1
 
             except AttributeError:
@@ -150,4 +134,17 @@ class RedditBotSingleton:
 
         print(f'Scraped {i_c} comments')
         
-        return df
+        return comments
+
+    def upload_to_s3(self, comments: List[Comment]):
+
+        location = "/tmp"
+        filename = get_dt_now() + ".json"
+        local_filepath = location + "/" + filename
+
+        # Write to local 
+        with open(local_filepath, "w") as jsonFile:
+                json.dump(comments, jsonFile)
+
+        # Upload to AWS S3 bucket
+        #s3_client.upload_file(local_filepath, S3_BUCKET, filename)

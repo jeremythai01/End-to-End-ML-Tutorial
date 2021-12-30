@@ -4,8 +4,8 @@
 import pickle
 import re
 import warnings
-import pandas as pd
 import nltk
+from pandas.core.frame import DataFrame
 nltk.download("stopwords")
 nltk.download('wordnet')
 nltk.download('punkt')
@@ -13,13 +13,10 @@ from nltk.corpus import stopwords
 from nltk.stem import PorterStemmer
 from nltk.stem import WordNetLemmatizer
 from nltk.tokenize import RegexpTokenizer
-from sklearn.decomposition import PCA
-from sklearn.feature_extraction.text import TfidfVectorizer
-from sklearn.preprocessing import MinMaxScaler
 
 
-class Preprocessing():
-    """Preprocessing class to clean Reddit comments and prepare it for 
+class TextCleaner():
+    """Text cleaner class to clean Reddit comments and prepare it for 
     
     NLP model prediction.
     """
@@ -27,14 +24,10 @@ class Preprocessing():
         self.__stemmer = PorterStemmer() 
         self.__lemmatizer = WordNetLemmatizer()
         self.__tokenizer = RegexpTokenizer(r'\w+')
-        # Filter incoming warnings when importing vectorizer and pca estimator
-        warnings.filterwarnings(action="ignore", message="Trying to unpickle estimator ")
-        self.__vectorizer = pickle.load(open('./ml/nlp_tools/Tfidf_Vectorizer.pkl','rb'))
-        self.__pca = pickle.load(open('./ml/nlp_tools/pca.pkl','rb'))
         self.__stopwords = stopwords.words('english')
 
 
-    def preprocess_text(self, df):
+    def clean_text(self, df: DataFrame):
         """Preprocess comments with different techniques to transform them 
         
         into a more predictable form for the model.
@@ -77,19 +70,3 @@ class Preprocessing():
         df['cleaned text'] = clean_text_list
 
         return df
-
-    def vectorize(self, df):
-        """Convert cleaned comments to a matrix of TF-IDF numerical features.
-
-        Parameters
-        ----------
-        df : Dataframe 
-             The comments to be vectorized.
-        
-        Returns
-        -------
-        vectorized_text : 2D list of features to feed to model
-        """
-        vectorized_text = self.__vectorizer.transform(df['cleaned text']).toarray()
-        vectorized_text = self.__pca.transform(vectorized_text)
-        return vectorized_text

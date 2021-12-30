@@ -1,0 +1,4 @@
+fastapi==0.70.1
+praw==7.5.0
+python-decouple==3.5
+uvicorn

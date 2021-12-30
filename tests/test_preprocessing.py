@@ -4,7 +4,7 @@
 import pandas as pd
 import re
 import regex
-from ml import preprocessing
+from services.api.ml import text_cleaner
 
 
 def test_preprocess_text_check_numbers():    
@@ -13,7 +13,7 @@ def test_preprocess_text_check_numbers():
 
     df = pd.DataFrame(text)
 
-    preprocessor = preprocessing.Preprocessing()
+    preprocessor = text_cleaner.Preprocessing()
 
     result_df = preprocessor.preprocess_text(df)
 
@@ -28,7 +28,7 @@ def test_preprocess_text_check_special_characters():
 
     df = pd.DataFrame(text)
 
-    preprocessor = preprocessing.Preprocessing()
+    preprocessor = text_cleaner.Preprocessing()
 
     result_df = preprocessor.preprocess_text(df)
 
