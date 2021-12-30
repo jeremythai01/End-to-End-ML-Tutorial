@@ -1,4 +1,4 @@
-FROM tiangolo/uvicorn-gunicorn:python3.8
+FROM python:3.9
 
 WORKDIR /data_scrape
 

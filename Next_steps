@@ -1,8 +1,0 @@
-1. Encapsuler lapplication Dash dans Flask
-2. Creer un microservice pour lingestion des donnes, le modele ML et lorschestration
-3. Orchestrer lingestion de donnees avec des outils comme Airflow
-4. Monitorer la performance du modele
-5. Containeriser tous les microservices avec docker
-6. Rouler lapplication sur le cloud pour avoir un servir lapplication plus facilement
-7. ajouter un microservice pour enlever les anciennes donnees du database
-8. ajouter un metadata DB (RDS)

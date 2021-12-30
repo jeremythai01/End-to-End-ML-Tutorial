@@ -2,13 +2,15 @@ version: '3.9'
 services:
   data_scrape:
     build: services/data_scrape
+    ports:
+      - "8000:420" # <port on localhost>: <port on container>
+    volumes:
+      # Bind mount: it copies local changes made in /data_scrape to container /data_scrape
+      - ./services/data_scrape:/data_scrape:ro # local path/to/app : container path/to/app ready only 
+    command: uvicorn app.main:app --host 0.0.0.0 --port 420 --reload
     environment:
       - REDDIT_CLIENT_ID=${REDDIT_CLIENT_ID}
       - REDDIT_CLIENT_SECRET=${REDDIT_CLIENT_SECRET}
       - REDDIT_PASSWORD=${REDDIT_PASSWORD}
       - REDDIT_USERNAME=${REDDIT_USERNAME}
       - REDDIT_USER_AGENT=${REDDIT_USER_AGENT}
-    ports:
-      - "69:420" # <port on localhost>: <port on container>
-    volumes:
-      - ./:/data_scrape # Bind mount: it copies local changes made in /data_scrape to container /data_scrape

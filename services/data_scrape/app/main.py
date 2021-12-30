@@ -9,7 +9,7 @@ app = FastAPI()
 # Path operation
 @app.get("/")
 def root():
-    return {"message": "Hello Data Scraper"}
+    return {"message": "Hello Data Scraper!"}
 
 
 @app.get("/comments/{number_posts}")
