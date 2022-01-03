@@ -1,17 +1,10 @@
 #! /usr/bin/env python
 # -*- coding: utf-8 -*-
 
-import json
-#import boto3
 from decouple import config
 from praw import Reddit
 from praw.reddit import Comment, Submission
-from typing import List
-from app.schemas import Comment
-from app.utils import convert_time_zone, get_dt_now
-
-#s3_client = boto3.client("s3")
-S3_BUCKET = "your-s3-bucket"
+from typing import Any, List
 
 class RedditBot:
     """Reddit bot singleton to scrape Reddit data from subreddits."""
@@ -51,25 +44,26 @@ class RedditBot:
         return reddit_bot
 
 
-    def scrape_reddit(self, subreddit: str, n_submissions: int):
-        """Extract submissions and scrape data from specified subreddit.
+    def scrape_reddit(self, subreddit: str, limit_posts: int):
+        """Extract posts and comments by scraping data from specified subreddit.
 
         Parameters
         ----------
         subreddit :     string 
                         The subreddit where the bot will scrape data.
 
-        n_submissions : integer 
-                        The number of posts where the bot will scrape data.
+        limit_posts : integer 
+                        The limit of posts where the bot will scrape data.
         
         Returns
         -------
-        df : dataframe of scraped Reddit comments
+        comments_info : list of scraped Reddit comments info
         """
-        submissions =  self._instance._bot.subreddit(subreddit).hot(limit=n_submissions)
-        df = self._scrape_comments(submissions)
 
-        return df
+        posts =  self._instance._bot.subreddit(subreddit).hot(limit=limit_posts)
+        comments = self._scrape_comments(posts)
+
+        return comments
 
 
     def _extract_comment_info(self, comment: Comment):
@@ -84,67 +78,66 @@ class RedditBot:
         -------
         comment_info : dict of the comment info
         """
+        
         comment_info = {
-            'subreddit': str(comment.subreddit),
-            'author': str(comment.author),
-            'text': str(comment.body), 
-            'date': convert_time_zone(comment.created)
+            'post': str(comment.submission.title),
+            'author': str(comment.author.name),
+            'author_comment_karma': str(comment.author.comment_karma),
+            'author_link_karma': str(comment.author.link_karma),
+            'author_is_mod': str(comment.author.is_mod),
+            'author_is_gold': str(comment.author.is_gold),
+            'comment_id': str(comment.id),
+            'body': str(comment.body),
+            'score': str(comment.score),
+            'date': str(comment.created_utc)
         }
 
         return comment_info
 
 
-    def _scrape_comments(self, submissions: List[Submission]):
+    def check_submission_constraints(self, submission: Submission):
+        # Exclude irrelevant submissions
+        return not any(substring in submission.title for substring in 
+                    ('Thread', 'Daily Discussion', 'Rate My Portfolio'))
+
+
+    def check_comment_constraints(self, comment: Any):
+        # Filter comments without author or enough votes
+        MIN_SCORE = 10
+        return (type(comment) == Comment and 
+                comment.author != None and 
+                comment.score >= MIN_SCORE)
+
+
+    def _scrape_comments(self, posts: List[Submission]):
         """Scrape Reddit comments from specified submissions.
         
         Parameters
         ----------
-        submissions : list of Submission object 
-                      The submissions used to scrape data.      
+        posts :         list of Submission object 
+                        The posts used to scrape data.      
         
         Returns
         -------
-        df : dataframe of scraped Reddit comments
+        comments_info : list of scraped Reddit comments info
         """
-        comments = []
+        comments_info = []
         i_c = 0
-        MIN_VOTES = 5
-        for submission in submissions:
-            try:
-                
-                # Exclude irrelevant submissions
-                if any(substring in submission.title for substring in 
-                      ('Thread', 'Daily Discussion', 'Porfolio')):
-                    continue 
+        for post in posts:
+            # Include comments from the "load more comments" section
+            post.comments.replace_more(limit=0)
 
-                # Include comments from the "load more comments" section
-                submission.comments.replace_more(limit=None)
-                for comment in submission.comments.list():
-
-                    # Filter comments without author or enough votes
-                    if comment.author == "None" or comment.score < MIN_VOTES:
-                        continue
-
+            filtered_comments = list(filter(self.check_comment_constraints, post.comments.list()))
+            for comment in filtered_comments:
+                try:
                     c_info = self._extract_comment_info(comment)
-                    comments.append(c_info)
-                    i_c += 1
+                except AttributeError:
+                    continue
 
-            except AttributeError:
-                continue
-
+                i_c += 1
+                comments_info.append(c_info)
+            print("1 post done")
+                
         print(f'Scraped {i_c} comments')
         
-        return comments
-
-    def upload_to_s3(self, comments: List[Comment]):
-
-        location = "/tmp"
-        filename = get_dt_now() + ".json"
-        local_filepath = location + "/" + filename
-
-        # Write to local 
-        with open(local_filepath, "w") as jsonFile:
-                json.dump(comments, jsonFile)
-
-        # Upload to AWS S3 bucket
-        #s3_client.upload_file(local_filepath, S3_BUCKET, filename)
+        return comments_info

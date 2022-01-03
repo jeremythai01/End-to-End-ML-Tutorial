@@ -2,15 +2,25 @@ version: '3.9'
 services:
   data_scrape:
     build: services/data_scrape
-    ports:
-      - "8000:420" # <port on localhost>: <port on container>
     volumes:
       # Bind mount: it copies local changes made in /data_scrape to container /data_scrape
-      - ./services/data_scrape:/data_scrape:ro # local path/to/app : container path/to/app ready only 
-    command: uvicorn app.main:app --host 0.0.0.0 --port 420 --reload
+      - ./services/data_scrape:/data_scrape:ro # local path/to/app : container path/to/app ready only
+      # Set container time same as host
+      - "/etc/timezone:/etc/timezone:ro"
+      - "/etc/localtime:/etc/localtime:ro"
     environment:
+      - AWS_ACCESS_KEY_ID=${AWS_ACCESS_KEY_ID}
+      - AWS_SECRET_ACCESS_KEY=${AWS_SECRET_ACCESS_KEY}
       - REDDIT_CLIENT_ID=${REDDIT_CLIENT_ID}
       - REDDIT_CLIENT_SECRET=${REDDIT_CLIENT_SECRET}
       - REDDIT_PASSWORD=${REDDIT_PASSWORD}
       - REDDIT_USERNAME=${REDDIT_USERNAME}
       - REDDIT_USER_AGENT=${REDDIT_USER_AGENT}
+  # data_prep:
+  #   build: services/data_prep
+  #   ports:
+  #     - "8001:421" # <port on localhost>: <port on container>
+  #   volumes:
+  #     - ./services/data_prep:/data_prep:ro 
+  #   command: uvicorn app.main:app --host 0.0.0.0 --port 421 --reload
+  #   environment:
