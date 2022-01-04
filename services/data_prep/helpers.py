@@ -27,16 +27,6 @@ def convert_date_time_zone(df):
     return df
 
 
-def upper_case_is_mod(df):
-    df['author_is_mod'] = df['author_is_mod'].apply(lambda x: str(x).upper())
-    return df
-
-
-def upper_case_is_gold(df):
-    df['author_is_gold'] = df['author_is_gold'].apply(lambda x: str(x).upper())
-    return df
-
-
 def preprocess_comment_body(df):
     text_preprocessor = TextPreprocessor()
     df['body'] = df['body'].apply(text_preprocessor.preprocess_text)
@@ -64,3 +54,34 @@ def read_comments_file_s3():
        result = result["Body"].read().decode('utf-8')            
        
        return result
+       
+
+def get_exchange_insert_query():
+        return '''
+        INSERT INTO Reddit.Comment (
+            post,
+            author,
+            authorCommentKarma,
+            authorLinkKarma,
+            isAuthorMod,
+            isAuthorGold,
+            commentId,
+            body,
+            score,
+            "date"
+        )
+        VALUES (
+            %(post)s,
+            %(author)s,
+            %(author_comment_karma)s,
+            %(author_link_karma)s,
+            %(author_is_mod)s,
+            %(author_is_gold)s,
+            %(comment_id)s,
+            %(body)s,
+            %(score)s,
+            %(date)s
+        )
+        -- Dont insert duplicates
+        ON CONFLICT (commentId) DO NOTHING; 
+        '''

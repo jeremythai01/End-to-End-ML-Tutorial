@@ -95,12 +95,6 @@ class RedditBot:
         return comment_info
 
 
-    def check_submission_constraints(self, submission: Submission):
-        # Exclude irrelevant submissions
-        return not any(substring in submission.title for substring in 
-                    ('Thread', 'Daily Discussion', 'Rate My Portfolio'))
-
-
     def check_comment_constraints(self, comment: Any):
         # Filter comments without author or enough votes
         MIN_SCORE = 10
