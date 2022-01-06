@@ -2,11 +2,6 @@
 # -*- coding: utf-8 -*-
 
 import re
-import nltk
-nltk.download('omw-1.4')
-nltk.download("stopwords")
-nltk.download('wordnet')
-nltk.download('punkt')
 from nltk.corpus import stopwords
 from nltk.stem import PorterStemmer
 from nltk.stem import WordNetLemmatizer

@@ -8,7 +8,7 @@ services:
         - POSTGRES_PASSWORD=${WAREHOUSE_PASSWORD}
         - POSTGRES_DB=${WAREHOUSE_DB}
       volumes:
-        - ./containers/warehouse:/docker-entrypoint-initdb.d
+        - ./docker_containers/warehouse:/docker-entrypoint-initdb.d
       healthcheck:
         test: ["CMD", "pg_isready", "-d", "${WAREHOUSE_DB}", "-U", "${WAREHOUSE_USER}"]
         interval: 5s
@@ -17,20 +17,17 @@ services:
       ports:
         - "5432:5432"
   data_scrape:
-    image: data_scrape_pipeline_image
-    container_name: data_scrape_pipeline_container
+    image: ${AWS_ECR}/data_scrape_pipeline
     build:
       context: ./
       dockerfile: ./containers/data_scrape/Dockerfile
     volumes:
       # Bind mount: it copies local changes made in /data_scrape to container /data_scrape
-      - ./services/data_scrape:/data_scrape:ro # local path/to/app : container path/to/app ready only
-      # Set container time same as host
-      - "/etc/timezone:/etc/timezone:ro"
-      - "/etc/localtime:/etc/localtime:ro"
+      - ./services/data_scrape:/var/task:ro # local path/to/app : container path/to/app ready only
     environment:
       - AWS_ACCESS_KEY_ID=${AWS_ACCESS_KEY_ID}
       - AWS_SECRET_ACCESS_KEY=${AWS_SECRET_ACCESS_KEY}
+      - AWS_DEFAULT_REGION=${AWS_DEFAULT_REGION}
       - AWS_S3_BUCKET=${AWS_S3_BUCKET}
       - REDDIT_CLIENT_ID=${REDDIT_CLIENT_ID}
       - REDDIT_CLIENT_SECRET=${REDDIT_CLIENT_SECRET}
@@ -40,13 +37,12 @@ services:
   data_prep:
     depends_on:
       - warehouse
-    image: data_prep_pipeline_image
-    container_name: data_prep_pipeline_container
+    image: ${AWS_ECR}/data_prep_pipeline
     build:
       context: ./
       dockerfile: ./containers/data_prep/Dockerfile
     volumes:
-      - ./services/data_prep:/data_prep:ro 
+      - ./services/data_prep:/var/task:ro 
     environment:
       - AWS_ACCESS_KEY_ID=${AWS_ACCESS_KEY_ID}
       - AWS_SECRET_ACCESS_KEY=${AWS_SECRET_ACCESS_KEY}

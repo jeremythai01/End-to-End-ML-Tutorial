@@ -11,16 +11,20 @@ def preprocess_comments(data):
                       .pipe(preprocess_comment_body)
 
     
-def lambda_handler():
+def lambda_handler(event, context):
     
     raw_data = read_comments_file_s3()
 
+    print("processing..")
+
     df_comments = preprocess_comments(raw_data)
     
-    comments_data = df_comments.to_dict('r') # store dicts in array 
+    comments_data = df_comments.to_dict('r') # store dicts in array
+
+    print("querying..")
 
     WarehouseConnection.getInstance().query(get_exchange_insert_query(), comments_data)
 
 
 if __name__ == '__main__':
-    lambda_handler()
+    lambda_handler(None, None)

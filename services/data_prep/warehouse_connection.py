@@ -1,7 +1,5 @@
 #! /usr/bin/env python
 # -*- coding: utf-8 -*-
-
-import time
 import psycopg2
 from psycopg2.extras import RealDictCursor, execute_batch
 from decouple import config
@@ -39,20 +37,19 @@ class WarehouseConnection:
         -------
         connection : new database connection
         """
-        while True: # break loop when connection is made
-            try:
-                connection = psycopg2.connect(host=config('WAREHOUSE_HOST'), 
-                                        database=config('WAREHOUSE_DB'), 
-                                        user=config('WAREHOUSE_USER'), 
-                                        password=config('WAREHOUSE_PASSWORD'), 
-                                        cursor_factory=RealDictCursor) # Give column names to values dict
-                connection.autocommit = True
-                print("Database connection was successful!")
-                break
-            except Exception as error:
-                print("Connecting to database failed")
-                print("Error:", error)
-                time.sleep(2)
+        
+        try:
+            connection = psycopg2.connect(host=config('WAREHOUSE_HOST'), 
+                                    database=config('WAREHOUSE_DB'), 
+                                    user=config('WAREHOUSE_USER'), 
+                                    password=config('WAREHOUSE_PASSWORD'), 
+                                    cursor_factory=RealDictCursor) # Give column names to values dict
+            connection.autocommit = True
+            print("Database connection was successful!")
+        except Exception as error:
+            print("Connecting to database failed")
+            print("Error:", error)
+            quit()
         
         return connection
 
