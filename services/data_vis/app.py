@@ -12,14 +12,15 @@ to the Flask API.
 import dash
 import pandas as pd
 import plotly
-import requests
-import time
 import dash_core_components as dcc
 import dash_html_components as html
 import plotly.graph_objs as go
 from dash.dependencies import Input, Output
 from decouple import config
+from warehouse_connection import WarehouseConnection
+from helpers import *
 
+warehouse_connection = WarehouseConnection.getInstance()
 
 app = dash.Dash(__name__)
 app.layout = html.Div(
@@ -38,17 +39,14 @@ app.layout = html.Div(
 
 def update_graph_scatter(n_intervals):
 
-    response_stream = requests.post(f"{config('REST_API_URL')}stream")
-    time.sleep(30)
+    data = warehouse_connection.fetch(get_sentiment_select_query())
 
-    response_comments = requests.get(f"{config('REST_API_URL')}comments")
+    df_sentiment = pd.DataFrame.from_records(dict(row) for row in data)
 
-    comments = pd.DataFrame(response_comments.json())
-    comments.sort_values('date', inplace=True)
-    comments['sentiment'] = comments['sentiment'].rolling(int(len(comments)/5)).mean()
+    df_sentiment['score'] = df_sentiment['score'].rolling(int(len(df_sentiment)/5)).mean()
 
-    X = comments.date.values[-100:]
-    Y = comments.sentiment.values[-100:]
+    X = df_sentiment.date.values[-100:]
+    Y = df_sentiment.sentiment.values[-100:]
 
     data = plotly.graph_objs.Scatter(
             x=list(X),
@@ -62,4 +60,4 @@ def update_graph_scatter(n_intervals):
 
 
 if __name__ == '__main__':
-    app.run_server(host=config('DASH_HOST'))  
+    app.run_server(host=config('DASH_HOST'))

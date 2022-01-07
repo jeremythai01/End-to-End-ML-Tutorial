@@ -15,7 +15,7 @@ def drop_irrelevant_posts(df):
     return df[~df['post'].str.contains(pattern)]
 
 
-def convert_time_zone(date):
+def _convert_time_zone(date):
     utc_datetime = datetime.utcfromtimestamp(float(date))
     local_datetime = utc_datetime.replace(tzinfo=timezone.utc).astimezone(tz=None)
     local_datetime = local_datetime.strftime('%Y-%m-%d %H:%M:%S')
@@ -23,7 +23,7 @@ def convert_time_zone(date):
 
 
 def convert_date_time_zone(df):
-    df['date'] = df['date'].apply(convert_time_zone)
+    df['date'] = df['date'].apply(_convert_time_zone)
     return df
 
 
@@ -35,7 +35,8 @@ def preprocess_comment_body(df):
 
 def read_comments_file_s3():
        
-       s3 = boto3.client('s3', aws_access_key_id=config('AWS_ACCESS_KEY_ID'), 
+       s3 = boto3.client('s3', region_name=config('AWS_DEFAULT_REGION'),
+                    aws_access_key_id=config('AWS_ACCESS_KEY_ID'), 
                     aws_secret_access_key=config('AWS_SECRET_ACCESS_KEY'),
                     aws_session_token=config('AWS_SESSION_TOKEN'))
 
@@ -55,9 +56,9 @@ def read_comments_file_s3():
        result = result["Body"].read().decode('utf-8')            
        
        return result
-       
 
-def get_exchange_insert_query():
+       
+def get_comment_insert_query():
         return '''
         INSERT INTO Reddit.Comment (
             post,
@@ -66,7 +67,7 @@ def get_exchange_insert_query():
             authorLinkKarma,
             isAuthorMod,
             isAuthorGold,
-            commentId,
+            idComment,
             body,
             score,
             "date"
@@ -84,5 +85,5 @@ def get_exchange_insert_query():
             %(date)s
         )
         -- Dont insert duplicates
-        ON CONFLICT (commentId) DO NOTHING; 
+        ON CONFLICT (idComment) DO NOTHING; 
         '''

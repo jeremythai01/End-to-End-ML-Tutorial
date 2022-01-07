@@ -23,7 +23,7 @@ def lambda_handler(event, context):
 
     print("querying..")
 
-    WarehouseConnection.getInstance().query(get_exchange_insert_query(), comments_data)
+    WarehouseConnection.getInstance().query(get_comment_insert_query(), comments_data)
 
 
 if __name__ == '__main__':
