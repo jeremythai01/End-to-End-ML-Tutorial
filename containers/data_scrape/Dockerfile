@@ -9,6 +9,6 @@ COPY /containers/data_scrape/requirements.txt ${LAMBDA_TASK_ROOT}
 
 RUN pip install --no-cache-dir --upgrade -r requirements.txt
 
-COPY /services/data_scrape ${LAMBDA_TASK_ROOT} 
+COPY /src/services/data_scrape ${LAMBDA_TASK_ROOT} 
 
 CMD ["lambda_function.lambda_handler"]

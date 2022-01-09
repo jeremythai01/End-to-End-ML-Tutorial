@@ -1,6 +1,6 @@
 import unittest
 import re
-from services.data_prep.text_preprocessor import TextPreprocessor
+from src.services.data_prep.text_preprocessor import TextPreprocessor
 
 class TestTextPreprocessor(unittest.TestCase):
 

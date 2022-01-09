@@ -1,7 +1,7 @@
 
 from typing import Dict
 import unittest
-from services.data_scrape.reddit_bot import RedditBot
+from src.services.data_scrape.reddit_bot import RedditBot
 
 class TestRedditBot(unittest.TestCase):
 

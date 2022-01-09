@@ -1,6 +1,6 @@
 import unittest
 import pandas as pd
-from services.ml_predict.sentiment_analyzer import SentimentAnalyzer
+from src.services.ml_predict.sentiment_analyzer import SentimentAnalyzer
 
 class TestSentimentAnalyzer(unittest.TestCase):
 

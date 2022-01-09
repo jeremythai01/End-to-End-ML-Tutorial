@@ -47,5 +47,3 @@ services:
       - WAREHOUSE_PASSWORD=${WAREHOUSE_PASSWORD}
       - WAREHOUSE_HOST=${WAREHOUSE_HOST}
       - WAREHOUSE_PORT=${WAREHOUSE_PORT}
-    ports:
-      - "8000:8000" # <port on localhost>: <port on container>
