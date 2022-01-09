@@ -1,6 +1,3 @@
-#! /usr/bin/env python
-# -*- coding: utf-8 -*-
-
 import re
 from nltk.corpus import stopwords
 from nltk.stem import PorterStemmer

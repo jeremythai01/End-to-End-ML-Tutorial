@@ -27,7 +27,8 @@ def write_to_local(comments: List[Dict[str,str]]):
 
 # Ensure idempotency
 def is_pipeline_idempotent():
-    s3 = boto3.client('s3', aws_access_key_id=config('AWS_ACCESS_KEY_ID'), 
+    s3 = boto3.client('s3', region_name=config('AWS_DEFAULT_REGION'),
+                    aws_access_key_id=config('AWS_ACCESS_KEY_ID'), 
                     aws_secret_access_key=config('AWS_SECRET_ACCESS_KEY'),
                     aws_session_token=config('AWS_SESSION_TOKEN'))
     
@@ -54,11 +55,9 @@ def is_pipeline_idempotent():
 
 def upload_to_s3(local_filepath, filename):
 
-    s3 = boto3.client('s3', aws_access_key_id=config('AWS_ACCESS_KEY_ID'), 
-                    aws_secret_access_key=config('AWS_SECRET_ACCESS_KEY'),
-                    aws_session_token=config('AWS_SESSION_TOKEN'))
+    s3 = boto3.client('s3', region_name=config('AWS_DEFAULT_REGION'),
+                        aws_access_key_id=config('AWS_ACCESS_KEY_ID'), 
+                        aws_secret_access_key=config('AWS_SECRET_ACCESS_KEY'),
+                        aws_session_token=config('AWS_SESSION_TOKEN'))
 
-    # Filename - File to upload
-    # Bucket - Bucket to upload to (the top level directory under AWS S3)
-    # Key - S3 object name (can contain subdirectories). If not specified then file_name is used
     s3.upload_file(Filename=local_filepath, Bucket=config('AWS_S3_BUCKET'), Key=filename)

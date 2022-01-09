@@ -1,6 +1,5 @@
-
 from sentiment_analyzer import SentimentAnalyzer
-from warehouse_connection import WarehouseConnection
+from utils.warehouse_connection import WarehouseConnection
 from helpers import *
 import pandas as pd
 

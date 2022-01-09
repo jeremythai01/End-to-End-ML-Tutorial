@@ -1,7 +1,7 @@
 import pandas as pd
 import json
 from helpers import *
-from warehouse_connection import WarehouseConnection
+from utils.warehouse_connection import WarehouseConnection
 
 def preprocess_comments(data):
     df_comments = pd.DataFrame(json.loads(data))

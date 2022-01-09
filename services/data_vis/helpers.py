@@ -1,6 +1,3 @@
-from decouple import config
-
-       
 def get_sentiment_select_query():
         return '''
             SELECT s.score, c.date

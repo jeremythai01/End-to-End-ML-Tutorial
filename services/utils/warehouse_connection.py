@@ -1,7 +1,5 @@
-#! /usr/bin/env python
-# -*- coding: utf-8 -*-
 import psycopg2
-from psycopg2.extras import RealDictCursor
+from psycopg2.extras import RealDictCursor, execute_batch
 from decouple import config
 
 
@@ -52,11 +50,24 @@ class WarehouseConnection:
             quit()
         
         return connection
+
+
+    def query(self, query: str, data: dict = None):
+        """Execute an SQL query.
+
+        Parameters
+        ----------
+        query :  string 
+                 The request for the database.
+
+        data : dict 
+                 Values to be targeted by the query.
+        """
+        execute_batch(self._instance._db_cursor, query, data)
+        print("executed batch query")
         
 
     def fetch(self, query):
         self._instance._db_cursor.execute(query)
         comments = self._instance._db_cursor.fetchall()
         return comments
-
-    

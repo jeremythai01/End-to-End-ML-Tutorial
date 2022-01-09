@@ -1,11 +1,6 @@
-#! /usr/bin/env python
-# -*- coding: utf-8 -*-
-
 """The Dash app which will display a real-time graph of sentiment scores from 
 
-the Reddit comments. It updates live sentiment scores by making HTTP requests
-
-to the Flask API.
+the Reddit comments. It updates live sentiment scores by fetching data from AWS RDS.
 """
 
 
@@ -17,7 +12,7 @@ import dash_html_components as html
 import plotly.graph_objs as go
 from dash.dependencies import Input, Output
 from decouple import config
-from warehouse_connection import WarehouseConnection
+from utils.warehouse_connection import WarehouseConnection
 from helpers import *
 
 warehouse_connection = WarehouseConnection.getInstance()
@@ -60,4 +55,4 @@ def update_graph_scatter(n_intervals):
 
 
 if __name__ == '__main__':
-    app.run_server(host=config('DASH_HOST'))
+    app.run_server(host='0.0.0.0')
