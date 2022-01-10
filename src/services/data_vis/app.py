@@ -11,7 +11,7 @@ import dash_html_components as html
 import plotly.graph_objs as go
 from dash.dependencies import Input, Output
 from decouple import config
-from warehouse_connection import WarehouseConnection
+from utils.warehouse_connection import WarehouseConnection
 from helpers import *
 
 warehouse_connection = WarehouseConnection.getInstance()

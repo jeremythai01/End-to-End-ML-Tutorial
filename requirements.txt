@@ -1,0 +1,10 @@
+boto3
+nltk
+pandas
+python-decouple
+scikit_learn==0.22
+praw
+pytest
+black
+mypy
+pylint
