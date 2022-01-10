@@ -1,6 +1,6 @@
 # Reddit Sentiment Analysis Pipeline
 
-This is an end-to-end cloud pipeline to perform sentiment analysis of Reddit comments from [r/stocks](https://www.reddit.com/r/stocks/). 
+This is an end-to-end cloud pipeline to support sentiment analysis of Reddit comments from [r/stocks](https://www.reddit.com/r/stocks/). 
 
 ## Architecture
 
