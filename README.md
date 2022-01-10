@@ -15,7 +15,7 @@ Here are the steps:
 ![Dash](assets/images/dash.png)
 
 
-All of the components are stored as Docker images in [Amazon ECR](https://docs.aws.amazon.com/AmazonECR/latest/userguide/what-is-ecr.html) repositories so that [AWS Lambda](https://docs.aws.amazon.com/lambda/latest/dg/welcome.html) can run the code. The whole pipeline is orchestrated and scheduled using [AWS Step Functions](https://docs.aws.amazon.com/step-functions/latest/dg/welcome.html) and [AWS CloudWatch](https://docs.aws.amazon.com/AmazonCloudWatch/latest/monitoring/WhatIsCloudWatch.html) (logs are included).
+All of the components are stored as Docker images in [Amazon ECR](https://docs.aws.amazon.com/AmazonECR/latest/userguide/what-is-ecr.html) repositories so that they can be deployed to [AWS Lambda](https://docs.aws.amazon.com/lambda/latest/dg/welcome.html). The whole pipeline is orchestrated and scheduled using [AWS Step Functions](https://docs.aws.amazon.com/step-functions/latest/dg/welcome.html) and [AWS CloudWatch](https://docs.aws.amazon.com/AmazonCloudWatch/latest/monitoring/WhatIsCloudWatch.html) (logs are included).
 
 ## Pre-requisites & Setup
 
