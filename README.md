@@ -6,6 +6,7 @@ This is an end-to-end cloud pipeline to perform sentiment analysis of Reddit com
 
 ![Arch](assets/images/arch.png)
 
+Here are the steps:
 1. Raw data is scraped from Reddit and loaded into a data lake ([Amazon S3](https://docs.aws.amazon.com/AmazonS3/latest/userguide/Welcome.html)).
 2. Some data transformation is perfomed using [Pandas](https://pandas.pydata.org/docs/user_guide/index.html) and the cleaned data is put into a data warehouse ([PostgreSQL on Amazon RDS](https://docs.aws.amazon.com/AmazonRDS/latest/UserGuide/CHAP_PostgreSQL.html)).
 3. A pretrained ML model is ran against the rows in the data warehouse and the results are stored into a table.
